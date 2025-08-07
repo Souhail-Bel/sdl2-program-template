@@ -16,6 +16,7 @@ using namespace std;
 
 SDL_Window* 	g_window;
 SDL_Renderer* 	g_renderer;
+SDL_Texture*	g_texture;
 SDL_Event 		g_event;
 
 bool is_running;
@@ -45,14 +46,7 @@ void init_SDL(void){
 		SDL_WINDOWPOS_UNDEFINED,
 		WIDTH, HEIGHT,
 		SDL_WINDOW_SHOWN
-	);
-	
-	if(!g_window){
-		perror(SDL_GetError());
-		SDL_Quit();
-		exit(-1);
-	}
-	
+	);	
 	
 	g_renderer = SDL_CreateRenderer(
 		g_window,
@@ -60,15 +54,24 @@ void init_SDL(void){
 		SDL_RENDERER_ACCELERATED
 	);
 	
-	if(!g_renderer){
+	g_texture = SDL_CreateTexture(
+		g_renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		WIDTH,
+		HEIGHT
+	);
+	
+	
+	if(!g_window || !g_renderer || !g_texture){
 		perror(SDL_GetError());
-		SDL_DestroyWindow(g_window);
 		SDL_Quit();
 		exit(-1);
 	}
 }
 
 void close_SDL(void){
+	SDL_DestroyTexture(g_texture);
 	SDL_DestroyRenderer(g_renderer);
 	SDL_DestroyWindow(g_window);
 	
@@ -90,22 +93,49 @@ void handle_INPUT(void){
 
 void update_RENDER(void){
 	
-	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
-	SDL_RenderClear(g_renderer);
+	// SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
+	// SDL_RenderClear(g_renderer);
 	
-	for(int x = 0; x < WIDTH; x++) {
-		for(int y = 0; y < HEIGHT; y++) {
-			int idx = get_idx(x, y);
+	// for(int x = 0; x < WIDTH; x++) {
+		// for(int y = 0; y < HEIGHT; y++) {
+			// int idx = get_idx(x, y);
 			
-			SDL_SetRenderDrawColor(g_renderer,
-				CANAL_R[idx],
-				CANAL_G[idx],
-				CANAL_B[idx],
-			255);
-			if(display_buffer[idx]) SDL_RenderDrawPoint(g_renderer, x, y);
-		}
+			// SDL_SetRenderDrawColor(g_renderer,
+				// CANAL_R[idx],
+				// CANAL_G[idx],
+				// CANAL_B[idx],
+			// 255);
+			// if(display_buffer[idx]) SDL_RenderDrawPoint(g_renderer, x, y);
+		// }
+	// }
+	
+	// SDL_RenderPresent(g_renderer);
+	
+	
+	// Optimized approach
+	// using Lock/Unlock texture on GPU
+	
+	void* texture_pixels;
+	int pitch;
+	
+	SDL_LockTexture(g_texture, NULL, &texture_pixels, &pitch);
+	
+	// Per pixel (32-bit) manipulation
+	// ARGB format
+	uint32_t* pixels = static_cast<uint32_t*>(texture_pixels);
+	
+	for(int idx = 0; idx = WIDTH * HEIGHT; idx++){
+		if(display_buffer[idx])
+			pixels[idx] = (255 << 24) | (CANAL_R[idx] << 16) | (CANAL_G[idx] << 8) | CANAL_B[idx];
+		else
+			pixels[idx] = 0;
 	}
 	
+	SDL_UnlockTexture(g_texture);
+	
+	SDL_RenderClear(g_renderer);
+	
+	SDL_RenderCopy(g_renderer, g_texture, NULL, NULL);
 	SDL_RenderPresent(g_renderer);
 }
 
@@ -120,7 +150,7 @@ void compute_FRAME(void){
 	
 	fill(CANAL_B.begin(), CANAL_B.end(), 0);
 	
-	for(int x = amp*sin(t) + offset; x < min((int)(amp*sin(t)) + offset + thickness, WIDTH); x++) {
+	for(int x = amp*sin(t) + offset; x < min(static_cast<int>(amp*sin(t)) + offset + thickness, WIDTH); x++) {
 		for(int y = HEIGHT/3; y < HEIGHT*2/3; y++) {
 			int idx = get_idx(x,y);
 			CANAL_B[idx] = 128;
