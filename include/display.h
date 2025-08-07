@@ -3,6 +3,11 @@
 
 #include <SDL2/SDL.h>
 
+#include <vector>
+#include <cstdint>
+
+using namespace std;
+
 // Window dimensions
 const int WIDTH  = 640;
 const int HEIGHT = 480;
@@ -14,9 +19,16 @@ extern SDL_Event 		g_event;
 
 extern bool is_running;
 
+// Rendering elements
+extern vector<bool> display_buffer;
+extern vector<uint8_t> CANAL_R;
+extern vector<uint8_t> CANAL_G;
+extern vector<uint8_t> CANAL_B;
 
+constexpr int get_idx(int x, int y);
 void init_SDL(void);
 void close_SDL(void);
 void handle_INPUT(void);
+void update_RENDER(void);
 
 #endif
