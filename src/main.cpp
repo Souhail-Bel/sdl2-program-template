@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int FRAMERATE = 30;
+const int FRAMERATE = 60;
 constexpr int FRAME_DELAY_MS = 1e3/FRAMERATE;
 
 int main(int argc, char** argv){

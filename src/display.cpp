@@ -85,6 +85,9 @@ void handle_INPUT(void){
 	}
 }
 
+int t = 1;
+int dt = 1;
+
 void update_RENDER(void){
 	
 	SDL_SetRenderDrawColor(g_renderer, 0, 0, 0, 255);
@@ -95,14 +98,17 @@ void update_RENDER(void){
 			int idx = get_idx(x, y);
 			
 			SDL_SetRenderDrawColor(g_renderer,
-				CANAL_R[idx]%(y+1),
+				CANAL_R[idx]%(y*t+1),
 				CANAL_G[idx]%(x+1),
-				CANAL_B[idx]%(x*y+1),
+				(CANAL_B[idx]+(t+1))%256,
 			255);
-			
 			if(display_buffer[idx]) SDL_RenderDrawPoint(g_renderer, x, y);
 		}
 	}
+	t += dt;
+	
+	if(t == 10) dt = -1;
+	if(t == 1) dt = 1;
 	
 	SDL_RenderPresent(g_renderer);
 }
