@@ -16,6 +16,8 @@ int main(int argc, char** argv){
 	while(is_running){
 		handle_INPUT();
 		
+		compute_FRAME();
+		
 		update_RENDER();
 		
 		this_thread::sleep_for(chrono::milliseconds(FRAME_DELAY_MS));

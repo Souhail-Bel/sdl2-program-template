@@ -30,5 +30,6 @@ void init_SDL(void);
 void close_SDL(void);
 void handle_INPUT(void);
 void update_RENDER(void);
+void compute_FRAME(void);
 
 #endif

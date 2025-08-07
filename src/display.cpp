@@ -1,5 +1,7 @@
 #include <cerrno>
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 #define SDL_MAIN_HANDLED // Fixes 99.9% of bugs
 #include <SDL2/SDL.h>
@@ -20,9 +22,9 @@ bool is_running;
 
 
 vector<bool> display_buffer(HEIGHT*WIDTH, 1);
-vector<uint8_t> CANAL_R(HEIGHT*WIDTH, 255);
-vector<uint8_t> CANAL_G(HEIGHT*WIDTH, 255);
-vector<uint8_t> CANAL_B(HEIGHT*WIDTH, 125);
+vector<uint8_t> CANAL_R(HEIGHT*WIDTH, 0);
+vector<uint8_t> CANAL_G(HEIGHT*WIDTH, 0);
+vector<uint8_t> CANAL_B(HEIGHT*WIDTH, 0);
 
 
 constexpr int get_idx(int x, int y) {
@@ -85,8 +87,6 @@ void handle_INPUT(void){
 	}
 }
 
-int t = 1;
-int dt = 1;
 
 void update_RENDER(void){
 	
@@ -98,17 +98,34 @@ void update_RENDER(void){
 			int idx = get_idx(x, y);
 			
 			SDL_SetRenderDrawColor(g_renderer,
-				CANAL_R[idx]%(y*t+1),
-				CANAL_G[idx]%(x+1),
-				(CANAL_B[idx]+(t+1))%256,
+				CANAL_R[idx],
+				CANAL_G[idx],
+				CANAL_B[idx],
 			255);
 			if(display_buffer[idx]) SDL_RenderDrawPoint(g_renderer, x, y);
 		}
 	}
-	t += dt;
-	
-	if(t == 10) dt = -1;
-	if(t == 1) dt = 1;
 	
 	SDL_RenderPresent(g_renderer);
+}
+
+
+
+float t = 0;
+int amp = WIDTH/2;
+int offset = amp;
+int thickness = 60;
+
+void compute_FRAME(void){
+	
+	fill(CANAL_B.begin(), CANAL_B.end(), 0);
+	
+	for(int x = amp*sin(t) + offset; x < min((int)(amp*sin(t)) + offset + thickness, WIDTH); x++) {
+		for(int y = HEIGHT/3; y < HEIGHT*2/3; y++) {
+			int idx = get_idx(x,y);
+			CANAL_B[idx] = 128;
+		}
+	}
+	
+	t += 0.1;
 }
