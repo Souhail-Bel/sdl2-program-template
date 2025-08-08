@@ -9,8 +9,9 @@
 using namespace std;
 
 // Window dimensions
-const int WIDTH  = 640;
-const int HEIGHT = 480;
+const int WIDTH  		= 640;
+const int HEIGHT 		= 480;
+constexpr int WIN_SIZE 	= WIDTH*HEIGHT;
 
 // Global SDL elements
 extern SDL_Window* 		g_window;

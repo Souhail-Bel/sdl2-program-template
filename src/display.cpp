@@ -124,7 +124,7 @@ void update_RENDER(void){
 	// ARGB format
 	uint32_t* pixels = static_cast<uint32_t*>(texture_pixels);
 	
-	for(int idx = 0; idx = WIDTH * HEIGHT; idx++){
+	for(int idx = 0; idx < WIN_SIZE; idx++){
 		if(display_buffer[idx])
 			pixels[idx] = (255 << 24) | (CANAL_R[idx] << 16) | (CANAL_G[idx] << 8) | CANAL_B[idx];
 		else
