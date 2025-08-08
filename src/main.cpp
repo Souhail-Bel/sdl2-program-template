@@ -2,13 +2,16 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #include "display.h"
 
 using namespace std;
+using namespace std::chrono;
 
 const int FRAMERATE = 60;
 constexpr int FRAME_DELAY_MS = 1e3/FRAMERATE;
+
 
 int main(int argc, char** argv){
 	init_SDL();
@@ -16,13 +19,21 @@ int main(int argc, char** argv){
 	is_running = true;
 	
 	while(is_running){
+		auto start_time = high_resolution_clock::now();
+		
 		handle_INPUT();
 		
 		compute_FRAME();
 		
 		update_RENDER();
 		
-		this_thread::sleep_for(chrono::milliseconds(FRAME_DELAY_MS));
+		auto end_time	= high_resolution_clock::now();
+
+		auto delta_time = duration_cast<microseconds>(end_time - start_time);
+		
+		cout << "FPS: " << 1e6/delta_time.count() << endl;
+		
+		// this_thread::sleep_for(chrono::milliseconds(FRAME_DELAY_MS));
 	}
 	
 	close_SDL();
