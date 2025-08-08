@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-#define SDL_MAIN_HANDLED // Fixes 99.9% of bugs
 #include <SDL2/SDL.h>
 
 #include <vector>
@@ -23,9 +22,9 @@ bool is_running;
 
 
 vector<bool> display_buffer(HEIGHT*WIDTH, 1);
-vector<uint8_t> CANAL_R(HEIGHT*WIDTH, 0);
-vector<uint8_t> CANAL_G(HEIGHT*WIDTH, 0);
-vector<uint8_t> CANAL_B(HEIGHT*WIDTH, 0);
+vector<uint8_t> CANAL_R(WIN_SIZE, 0);
+vector<uint8_t> CANAL_G(WIN_SIZE, 0);
+vector<uint8_t> CANAL_B(WIN_SIZE, 0);
 
 
 constexpr int get_idx(int x, int y) {

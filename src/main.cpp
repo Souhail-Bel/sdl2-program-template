@@ -1,3 +1,5 @@
+#define SDL_MAIN_HANDLED // Fixes 99.9% of bugs
+
 #include <chrono>
 #include <thread>
 
