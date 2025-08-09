@@ -21,7 +21,7 @@ SDL_Event 		g_event;
 bool is_running;
 
 
-vector<uint32_t> display_buffer(HEIGHT*WIDTH, 0xFF << 24);
+uint32_t display_buffer[WIN_SIZE] = {default_pixel};
 // vector<uint8_t> CANAL_R(WIN_SIZE, 0);
 // vector<uint8_t> CANAL_G(WIN_SIZE, 0);
 // vector<uint8_t> CANAL_B(WIN_SIZE, 0);
@@ -121,13 +121,8 @@ void update_RENDER(void){
 	SDL_LockTexture(g_texture, NULL, &texture_pixels, &pitch);
 	
 	// Per pixel (32-bit) manipulation
-	// ARGB8888 format
-	uint32_t* pixels = static_cast<uint32_t*>(texture_pixels);
-	
-	for(int idx = 0; idx < WIN_SIZE; idx++){
-		//pixels[idx] = (255 << 24) | (CANAL_R[idx] << 16) | (CANAL_G[idx] << 8) | CANAL_B[idx];
-		pixels[idx] = display_buffer[idx];
-	}
+	// ARGB8888 format	
+	memcpy(texture_pixels, display_buffer, sizeof(display_buffer));
 	
 	SDL_UnlockTexture(g_texture);
 	
@@ -147,13 +142,14 @@ int thickness = 60;
 void compute_FRAME(void){
 	
 	// fill(CANAL_B.begin(), CANAL_B.end(), 0);
-	fill(display_buffer.begin(), display_buffer.end(), 0xFF << 24);
+	// fill(display_buffer.begin(), display_buffer.end(), 0xFF << 24);
+	memset(display_buffer, default_pixel, sizeof(display_buffer));
 	
 	for(int x = amp*sin(t) + offset; x < min(static_cast<int>(amp*sin(t)) + offset + thickness, WIDTH); x++) {
 		for(int y = HEIGHT/3; y < HEIGHT*2/3; y++) {
 			int idx = get_idx(x,y);
 			// CANAL_B[idx] = 128;
-			display_buffer[idx] |= (0x7F);
+			display_buffer[idx] |= (0x7FU);
 		}
 	}
 	

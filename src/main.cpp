@@ -31,7 +31,7 @@ int main(int argc, char** argv){
 
 		auto delta_time = duration_cast<microseconds>(end_time - start_time);
 		
-		cout << "FPS: " << 1e6/delta_time.count() << endl;
+		// cout << "FPS: " << 1e6/delta_time.count() << endl;
 		
 		// this_thread::sleep_for(chrono::milliseconds(FRAME_DELAY_MS));
 	}

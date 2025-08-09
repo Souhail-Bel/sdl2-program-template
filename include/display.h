@@ -13,6 +13,8 @@ const int WIDTH  		= 640;
 const int HEIGHT 		= 480;
 constexpr int WIN_SIZE 	= WIDTH*HEIGHT;
 
+const uint32_t default_pixel = 0xFFU << 24;
+
 // Global SDL elements
 extern SDL_Window* 		g_window;
 extern SDL_Renderer* 	g_renderer;
@@ -22,7 +24,7 @@ extern SDL_Event 		g_event;
 extern bool is_running;
 
 // Rendering elements
-extern vector<uint32_t> display_buffer;
+extern uint32_t display_buffer[HEIGHT*WIDTH];
 // extern vector<uint8_t> CANAL_R;
 // extern vector<uint8_t> CANAL_G;
 // extern vector<uint8_t> CANAL_B;
