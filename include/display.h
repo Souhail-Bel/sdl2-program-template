@@ -22,10 +22,10 @@ extern SDL_Event 		g_event;
 extern bool is_running;
 
 // Rendering elements
-extern vector<bool> display_buffer;
-extern vector<uint8_t> CANAL_R;
-extern vector<uint8_t> CANAL_G;
-extern vector<uint8_t> CANAL_B;
+extern vector<uint32_t> display_buffer;
+// extern vector<uint8_t> CANAL_R;
+// extern vector<uint8_t> CANAL_G;
+// extern vector<uint8_t> CANAL_B;
 
 constexpr int get_idx(int x, int y);
 void init_SDL(void);
